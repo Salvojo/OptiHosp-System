@@ -16,7 +16,7 @@ struct Nodo {
     Nodo* siguiente;
     Nodo* anterior;         };
 
-Nodo* lista = NULL; 
+Nodo* lista = NULL; //esto para mejor compresión de nosotros (para explicar a la profe)al utilizar punteros se pone en main
 
 void cambio_color(int x){
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),x);}
@@ -50,13 +50,21 @@ void mostrarLista(Nodo* lista);
 bool eliminarPorDNI(Nodo*& lista, int dni);
 void menu();
 
+//funciones de tu marido (para no estar repitiendo la misma wbda)
+Nodo* crearNodo(Nodo*&lista);
+
+
+
+
 void gotoxy(int x,int y);
 void cambio_color(int x);
 void mostrarCursor(bool visible);
 string clavesita();
 
 
+
 int main() {
+
    bannerInicio();
    ingresoMedico();
    menu();
@@ -265,4 +273,30 @@ void ingresoMedico(){
     Sleep(1000);
     system("cls");
     exit(1);
+}
+
+void insertarFinal(Nodo*& lista, const paciente& p){//preferia mejor ponerlo persona en lugar de 'p', pero asi esta...
+    Nodo nuevo=crearNodo(p);
+    if(!lista){
+        lista=nuevo;
+        nuevo->siguiente=nuevo;
+        nuevo->anterior=nuevo;
+        //lo mismo que nuevo->siguiente=nuevo->anterior=nuevo;
+    }else{
+        Nodo* ultimo = lista->anterior;
+        nuevo->siguiente=lista;
+        nuevo->anterior=ultimo;
+        ultimo->siguiente=nuevo;
+        lista->anterior=nuevo;
+    }
+
+    cout<<"Paciente guardado al final de la lista";
+
+}
+Nodo* crearNodo(Nodo*&lista, paciente persona){
+    Nodo* nuevo= new Nodo();
+    nuevo->info=persona;
+    nuevo->siguiente=nullptr;
+    nuevo->anterior=nullptr;
+    return nuevo;
 }
