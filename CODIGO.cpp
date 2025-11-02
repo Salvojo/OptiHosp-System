@@ -278,7 +278,7 @@ void ingresoMedico(){
 void insertarInicio(Nodo*& lista, const paciente& p){}
 
 void insertarFinal(Nodo*& lista, const paciente& p){//preferia mejor ponerlo persona en lugar de 'p', pero asi esta...
-    Nodo nuevo=crearNodo(p);
+    Nodo* nuevo=crearNodo(p);
     if(!lista){
         lista=nuevo;
         nuevo->siguiente=nuevo;
