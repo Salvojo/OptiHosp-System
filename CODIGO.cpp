@@ -275,6 +275,8 @@ void ingresoMedico(){
     exit(1);
 }
 
+void insertarInicio(Nodo*& lista, const paciente& p){}
+
 void insertarFinal(Nodo*& lista, const paciente& p){//preferia mejor ponerlo persona en lugar de 'p', pero asi esta...
     Nodo nuevo=crearNodo(p);
     if(!lista){
@@ -300,3 +302,38 @@ Nodo* crearNodo(Nodo*&lista, paciente persona){
     nuevo->anterior=nullptr;
     return nuevo;
 }
+
+void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p){}
+
+void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p) {
+    if (lista == NULL) {
+        cout << "La lista está vacía. No se puede insertar después de un paciente inexistente.\n";
+        return;}
+
+    Nodo* actual = lista;
+    do {
+        if (actual->info.dni == dniReferencia) {
+            Nodo* nuevo = new Nodo;
+            nuevo->info = p;
+
+            // se enlaza al nuevo nodo
+            nuevo->siguiente = actual->siguiente;
+            nuevo->anterior = actual;
+
+            actual->siguiente->anterior = nuevo;
+            actual->siguiente = nuevo;
+
+            cout << "Paciente insertado correctamente después del DNI " << dniReferencia << ".\n";
+            return;
+        }
+        actual = actual->siguiente;
+    } while (actual != lista);
+
+    cout << "No se encontró un paciente con el DNI de referencia.\n";
+}
+
+Nodo* buscarPaciente(Nodo* lista, int dni){}
+
+void mostrarLista(Nodo* lista){}
+
+bool eliminarPorDNI(Nodo*& lista, int dni){}
