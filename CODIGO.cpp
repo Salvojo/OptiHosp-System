@@ -36,6 +36,7 @@ Nodo* crearNodo(Nodo*);
 void ingresoMedico();
 string clavesita();
 paciente ingresoPaciente();
+void liberar(Nodo*& );
 
 //FUNCIONES AUXILIARES
 void gotoxy(int x,int y);
