@@ -21,7 +21,6 @@ struct Nodo {
     Nodo* anterior;
 };
 
-Nodo* lista = NULL; // esto para mejor comprensión (para explicar a la profe) al utilizar punteros se pone en main
 
 void cambio_color(int x) {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);
@@ -53,6 +52,7 @@ void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p);
 void buscarPaciente(Nodo* lista);
 void mostrarLista(Nodo* lista);
 bool eliminarPorDNI(Nodo*& lista, int dni);
+void liberar(Nodo*& );
 void menu();
 
 // funciones auxiliares
@@ -63,6 +63,7 @@ void mostrarCursor(bool visible);
 string clavesita();
 
 int main() {
+    Nodo* lista = nullptr;
     bannerInicio();
     ingresoMedico();
     menu();
@@ -551,4 +552,19 @@ void ingresoMedico() {
     Sleep(1000);
     system("cls");
     exit(1);
+}
+
+
+void liberar(Nodo*& lista) {
+    if (!lista) return;
+
+    Nodo* inicio = lista;
+
+    do {
+        Nodo* aux = lista;         
+        lista = lista->siguiente;  
+        delete aux;                
+    } while (lista != inicio);  
+
+    lista = nullptr;
 }
