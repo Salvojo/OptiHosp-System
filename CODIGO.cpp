@@ -19,8 +19,6 @@ struct Nodo {
     Nodo* anterior;
 };
 
-
-
 //FUNCIONES PRINCIPALES
 void menu(Nodo* &lista);
 void insertarInicio(Nodo*& lista, const paciente& p);
@@ -42,10 +40,12 @@ void liberar(Nodo*& );
 void gotoxy(int x,int y);
 void cambio_color(int x);
 void mostrarCursor(bool visible);
+void bannerInicio();
 
 
 int main() {
     Nodo* lista = nullptr; 
+    bannerInicio();
     ingresoMedico(); system("cls");
     menu(lista);
     liberar(lista);
@@ -59,7 +59,7 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
     do {
         cambio_color(11);
         cout << "\n\t=======================================" << endl;
-            cout << "\t   GESTIÓN DE CAMAS HOSPITALARIAS" << endl;
+        cout << "\t   GESTI\340N DE CAMAS HOSPITALARIAS" << endl;
         cout << "\t=======================================\n" << endl;
         cambio_color(15);
         cout << "\t1. Insertar paciente" << endl;
@@ -67,7 +67,7 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
         cout << "\t3. Mostrar lista de pacientes" << endl;
         cout << "\t4. Eliminar paciente por DNI" << endl;
         cout << "\t5. Salir" << endl;
-        cout << "\n\tSeleccione una opción: ";
+        cout << "\n\tSeleccione una opci\242n: ";
         cin >> opcion;
         
         switch (opcion) {
@@ -75,13 +75,13 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
                 system("cls");
                 int subop;
                 do {
-                    cout<<"\n===== SUBMENÚ DE INSERCIÓN ====="<<endl;
+                    cout<<"\n===== SUBMEN\351 DE INSERCI\340N ====="<<endl;
                     cout<<"1. Insertar al inicio un paciente"<<endl;
                     cout<<"2. Insertar al final un paciente"<<endl;
                     cout<<"3. Insertar antes de un paciente"<<endl;
-                    cout<<"4. Insertar después de un paciente"<<endl;
-                    cout<<"5. Volver al menú principal"<<endl;
-                    cout<<"Seleccione una opción: ";
+                    cout<<"4. Insertar despu\202s de un paciente"<<endl;
+                    cout<<"5. Volver al men\243 principal"<<endl;
+                    cout<<"Seleccione una opci\243n: ";
                     cin>>subop;
 
                     switch (subop){
@@ -119,7 +119,7 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
                             
                                 if (!encontrado) {
                                     cambio_color(12);
-                                    cout << "\nDNI inválido. No se encontró el paciente de referencia.\n";
+                                    cout << "\nDNI inv\240lido. No se encontr\242 el paciente de referencia.\n";
                                     cambio_color(7);
                                     getch();
                                     system("cls");
@@ -154,7 +154,7 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
                                 
                                     if (!encontrado) {
                                         cambio_color(12);
-                                        cout << "\nDNI inválido. No se encontró el paciente de referencia.\n";
+                                        cout << "\nDNI inv\240lido. No se encontr\242 el paciente de referencia.\n";
                                         cambio_color(7);
                                         getch();
                                         system("cls");
@@ -174,7 +174,7 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
 
                         default:
                             cambio_color(12);
-                            cout<<setw(10) << "\nOpción inválida. Intente nuevamente.\n";
+                            cout<<setw(10) << "\nOpci\242n inv\240lida. Intente nuevamente.\n";
                             cambio_color(7);
                             Sleep(100);
                             system("cls");
@@ -241,7 +241,7 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
 
             default:
                 cambio_color(12);
-                cout << "Opción inválida. Intente nuevamente.\n";
+                cout << "Opci\242n inv\240lida. Intente nuevamente.\n";
                 cambio_color(7);
                 Sleep(100);
             }
@@ -282,10 +282,10 @@ void ingresoMedico(){
     string ingreso_codigo, ingreso_contra;
 
     do{
-        gotoxy(35,5);cout<<"INGRESE CÓDIGO MÉDICO: "; 
+        gotoxy(35,5);cout<<"INGRESE C\340DIGO M\220DICO: "; 
         getline(cin, ingreso_codigo);
         
-        gotoxy(35,7);cout<<"INGRESE CONTRASEÑA: "; 
+        gotoxy(35,7);cout<<"INGRESE CONTRASE\245A: "; 
         ingreso_contra = clavesita();
         
         if(ingreso_codigo==codigo && ingreso_contra==contra){
@@ -312,7 +312,7 @@ paciente ingresoPaciente(){
     cout << "DNI: "; cin >> p.dni;
     cout << "Edad: "; cin >> p.edad;
     cin.ignore(); 
-    cout << "Diagnóstico: "; getline(cin, p.diagnostico);
+    cout << "Diagn\242stico: "; getline(cin, p.diagnostico);
 
    do{
         cout << "\nTipo de cama [1=General, 2=UCI, 3=UCIN]: ";
@@ -368,7 +368,7 @@ void insertarFinal(Nodo*& lista, const paciente& p){
 
 void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p){
     if (lista == NULL) {
-        cout << "La lista está vacía. \nNo se puede insertar antes de un paciente inexistente.\n";
+        cout << "La lista est\240 vac\241a. \nNo se puede insertar antes de un paciente inexistente.\n";
         return;
     }
 
@@ -398,7 +398,7 @@ void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p){
 
 void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p){
     if (lista == nullptr) {
-        cout << "La lista está vacía. \nNo se puede insertar después de un paciente inexistente.\n";
+        cout << "La lista est\240 vac\241a. \nNo se puede insertar despu\202s de un paciente inexistente.\n";
         return;}
 
     Nodo* actual = lista;
@@ -413,14 +413,13 @@ void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p){
             actual->siguiente->anterior = nuevo;
             actual->siguiente = nuevo;
 
-            cout << "Paciente insertado correctamente después del DNI " << dniReferencia << ".\n";
+            cout << "Paciente insertado correctamente despu\243s del DNI " << dniReferencia << ".\n";
             getch();
             return;
         }
         actual = actual->siguiente;
     } while (actual != lista);
-
-    
+  
 }
 
 void buscarPaciente(Nodo* lista) {
@@ -450,7 +449,7 @@ void buscarPaciente(Nodo* lista) {
             cout << "Nombre      : " << actual->info.nombre << endl;
             cout << "DNI         : " << actual->info.dni << endl;
             cout << "Edad        : " << actual->info.edad << endl;
-            cout << "Diagnóstico : " << actual->info.diagnostico << endl;
+            cout << "Diagn\242stico : " << actual->info.diagnostico << endl;
 
             cout << "Tipo de cama: ";
             if (actual->info.tipoCama == 1) cout << "General\n";
@@ -465,7 +464,7 @@ void buscarPaciente(Nodo* lista) {
 
     if (!encontrado) {
         cambio_color(12);
-        cout << "\nNo se encontró ningún paciente con ese DNI.\n";
+        cout << "\nNo se encontr\242 ning\243n paciente con ese DNI.\n";
         cambio_color(7);
     }
 }
@@ -513,7 +512,7 @@ void mostrarPacientes(Nodo* lista){
 
 bool eliminarPorDNI(Nodo*& lista, int dni){
     if(lista==nullptr){
-        cout<<"\n\tLa lista está vacía.";
+        cout<<"\n\tLa lista está vac\241a.";
         return false;
     }
 
@@ -590,4 +589,49 @@ void mostrarCursor(bool visible) {
     cci.bVisible = visible;                         
     SetConsoleCursorInfo(hCon, &cci);              
 }
+void bannerInicio() {
+    system("cls");
+    string titulo = "SISTEMA DE GESTI\340N HOSPITALARIA";
+    string subtitulo = "   Hospital Nacional";
+    
+    cambio_color(11);
+    gotoxy(25, 5);
+    cout << char(201);
+    for (int i = 0; i < 40; i++) cout << char(205);
+    cout << char(187);
 
+    for (int i = 6; i <= 11; i++) {
+        gotoxy(25, i); cout << char(186);
+        gotoxy(66, i); cout << char(186);
+    }
+
+    gotoxy(25, 12);
+    cout << char(200);
+    for (int i = 0; i < 40; i++) cout << char(205);
+    cout << char(188);
+
+    cambio_color(14);
+    gotoxy(30, 7);
+    for (char c : titulo) {
+        cout << c;
+        Sleep(80);
+    }
+
+    gotoxy(33, 9);
+    for (char c : subtitulo) {
+        cout << c;
+        Sleep(50);
+    }
+
+    cambio_color(7);
+    gotoxy(35, 11);
+    cout << "Cargando sistema";
+    for (int i = 0; i < 3; i++) {
+        cout << ".";
+        Sleep(700);
+    }
+    Sleep(600);
+
+    system("cls");
+    cambio_color(15);
+}
