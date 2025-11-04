@@ -74,7 +74,7 @@ int main() {
 void menu() {
     int opcion;
     do {
-         cout<<"\n===== GESTIÓN DE CAMAS HOSPITALARIAS ====="<<endl;
+         cout<<"\n===== GESTION DE CAMAS HOSPITALARIAS ====="<<endl;
         cout<<"1. Insertar paciente"<<endl;
          cout<<"2. Buscar paciente"<<endl;
          cout<<"3. Mostrar lista "<<endl;
@@ -87,12 +87,12 @@ void menu() {
             case 1: {
                 int subop;
                 do {
-                    cout<<"\n===== SUBMENÚ DE INSERCIÓN ====="<<endl;
+                    cout<<"\n===== SUBMENU DE INSERCION ====="<<endl;
                      cout<<"1. Insertar al inicio un paciente"<<endl;
                      cout<<"2. Insertar al final un paciente"<<endl;
                      cout<<"3. Insertar antes de un paciente"<<endl;
-                    cout<<"4. Insertar después de un paciente"<<endl;
-                    cout<<"5. Volver al menú principal"<<endl;
+                    cout<<"4. Insertar despues de un paciente"<<endl;
+                    cout<<"5. Volver al menu principal"<<endl;
                     cout<<"Seleccione una opción: ";
                     cin>>subop;
 
@@ -159,7 +159,7 @@ void menu() {
                     cout << "Paciente encontrado: " << encontrado->info.nombre 
                          << ", Edad: " << encontrado->info.edad << endl;
                 else
-                    cout << "No se encontró ningún paciente con ese DNI." << endl;
+                    cout << "No se encontro ningun paciente con ese DNI." << endl;
                 break;
             }
 
@@ -174,7 +174,7 @@ void menu() {
                 if (eliminarPorDNI(lista, dni))
                     cout << "Paciente eliminado correctamente.\n";
                 else
-                    cout << "No se encontró el paciente.\n";
+                    cout << "No se encontro el paciente.\n";
                 break;
             }
 
@@ -183,7 +183,7 @@ void menu() {
                 break;
 
             default:
-                cout << "Opción inválida. Intente nuevamente.\n";
+                cout << "Opcion inválida. Intente nuevamente.\n";
         }
 
     } while (opcion != 5);
