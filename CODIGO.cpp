@@ -2,6 +2,8 @@
 #include <string>
 #include<windows.h>
 #include<conio.h>
+#include <thread>
+#include <chrono>
 using namespace std;
 
 struct paciente {
@@ -284,7 +286,30 @@ void ingresoMedico(){
     exit(1);
 }
 
-void insertarInicio(Nodo*& lista, const paciente& p){}
+void insertarInicio(Nodo*& lista, const paciente& p) {
+    Nodo* nuevo = new Nodo();
+    nuevo->info = p;
+    
+    if (lista == NULL) {
+        nuevo->siguiente = nuevo;
+        nuevo->anterior = nuevo;
+        lista = nuevo;
+    } else {
+
+        Nodo* ultimo = lista->anterior;  
+        nuevo->siguiente = lista;  
+        nuevo->anterior = ultimo;    
+        lista->anterior = nuevo;   
+        ultimo->siguiente = nuevo;   
+        lista = nuevo;
+    }
+    string mensaje="Paciente insertado al inicio correctamente.\n"
+     for(char c : mensaje) {
+        cout << c << flush;
+        sleep_for(chrono::milliseconds(40));
+    }
+    
+}
 
 void insertarFinal(Nodo*& lista, const paciente& p){//preferia mejor ponerlo persona en lugar de 'p', pero asi esta...
     Nodo* nuevo=crearNodo(p);
