@@ -4,6 +4,7 @@
 #include <conio.h>
 #include <thread>
 #include <chrono>
+#include <iomanip>
 using namespace std;
 
 struct paciente {
@@ -49,7 +50,7 @@ void insertarInicio(Nodo*& lista, const paciente& p);
 void insertarFinal(Nodo*& lista, const paciente& p);
 void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p);
 void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p);
-Nodo* buscarPaciente(Nodo* lista, int dni);
+void buscarPaciente(Nodo* lista);
 void mostrarLista(Nodo* lista);
 bool eliminarPorDNI(Nodo*& lista, int dni);
 void menu();
@@ -307,9 +308,92 @@ void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p) {
     cout << "No se encontró un paciente con el DNI de referencia.\n";
 }
 
-Nodo* buscarPaciente(Nodo* lista, int dni){}
+void buscarPaciente(Nodo* lista) {
+    system("cls");
 
-void mostrarLista(Nodo* lista){}
+    if (lista == NULL) {
+        cambio_color(12);
+        cout << "\nNo hay pacientes registrados.\n";
+        cambio_color(7);
+        return;
+    }
+
+    int dniBuscado;
+    cout << "Ingrese el DNI del paciente a buscar: ";
+    cin >> dniBuscado;
+
+    Nodo* actual = lista;
+    bool encontrado = false;
+
+    // recorrido de la lista xd
+    do {
+        if (actual->info.dni == dniBuscado) {
+            encontrado = true;
+
+            cambio_color(10);
+            cout << "\nPaciente encontrado:\n";
+            cambio_color(7);
+
+            cout << "Nombre      : " << actual->info.nombre << endl;
+            cout << "DNI         : " << actual->info.dni << endl;
+            cout << "Edad        : " << actual->info.edad << endl;
+            cout << "Diagnóstico : " << actual->info.diagnostico << endl;
+
+            cout << "Tipo de cama: ";
+            if (actual->info.tipoCama == 1) cout << "General\n";
+            else if (actual->info.tipoCama == 2) cout << "UCI\n";
+            else cout << "UCIN\n";
+
+            return; 
+        }
+
+        actual = actual->siguiente;
+    } while (actual != lista);
+
+    cambio_color(12);
+    cout << "\nNo se encontró ningún paciente con ese DNI.\n";
+    cambio_color(7);
+}
+
+void mostrarLista(Nodo* lista) {
+    system("cls");
+    if (lista ==NULL) {
+        cambio_color(12);
+        cout << "\nNo hay pacientes registrados.\n";
+        cambio_color(7);
+        return;
+    }
+
+    cambio_color(11);
+    cout << "================ LISTA DE PACIENTES ================\n\n";
+    cambio_color(7);
+
+    cout << left;
+    cout << setw(15) << "NOMBRE"
+         << setw(12) << "DNI"
+         << setw(6)  << "EDAD"
+         << setw(15) << "CAMA"
+         << "DIAGNOSTICO\n";
+
+    cout << "-------------------------------------------------------------\n";
+
+    Nodo* actual = lista;
+    do {
+        cout << setw(15) << actual->info.nombre
+             << setw(12) << actual->info.dni
+             << setw(6)  << actual->info.edad;
+
+        if (actual->info.tipoCama == 1)      cout << setw(15) << "General";
+        else if (actual->info.tipoCama == 2) cout << setw(15) << "UCI";
+        else                                 cout << setw(15) << "UCIN";
+
+        cout << actual->info.diagnostico << "\n";
+
+        actual = actual->siguiente;
+    } while (actual != lista);
+
+    cout << "\n-------------------------------------------------------------\n";
+}
 
 bool eliminarPorDNI(Nodo*& lista, int dni){}
 
