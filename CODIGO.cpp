@@ -45,7 +45,6 @@ void mostrarCursor(bool visible);
 
 
 int main() {
-    SetConsoleOutputCP(CP_UTF8);
     Nodo* lista = nullptr; 
     ingresoMedico(); system("cls");
     menu(lista);
@@ -60,7 +59,7 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
     do {
         cambio_color(11);
         cout << "\n\t=======================================" << endl;
-        cout << "\t   GESTIÓN DE CAMAS HOSPITALARIAS" << endl;
+            cout << "\t   GESTIÓN DE CAMAS HOSPITALARIAS" << endl;
         cout << "\t=======================================\n" << endl;
         cambio_color(15);
         cout << "\t1. Insertar paciente" << endl;
