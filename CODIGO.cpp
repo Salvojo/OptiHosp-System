@@ -107,26 +107,73 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
                         }
 
                         case 3: {
-                            int dniRef;
-                            cout<<"DNI de referencia:"; 
-                            cin>>dniRef;
-                            paciente p=ingresoPaciente();
-                            insertarAntesDe(lista, dniRef, p);
-                            cout << "\nPaciente insertado antes del DNI de referencia.\n";
-                            system("cls");
-                            break;
-                        }
+                                int dniRef;
+                                cout << "DNI de referencia: "; 
+                                cin >> dniRef;
+                            
+                                // verificacion del dni :)
+                                Nodo* actual = lista;
+                                bool encontrado = false;
+                                if (lista != nullptr) {
+                                    do {
+                                        if (actual->info.dni == dniRef) {
+                                            encontrado = true;
+                                            break;
+                                        }
+                                        actual = actual->siguiente;
+                                    } while (actual != lista);
+                                }
+                            
+                                if (!encontrado) {
+                                    cambio_color(12);
+                                    cout << "\nDNI inválido. No se encontró el paciente de referencia.\n";
+                                    cambio_color(7);
+                                    getch();
+                                    system("cls");
+                                    break;  
+                                }
+                            
+                                
+                                paciente p = ingresoPaciente();
+                                insertarAntesDe(lista, dniRef, p);
+                                system("cls");
+                                break;
+                            }
+
 
                         case 4: {
-                            int dniRef;
-                            cout<<"DNI de referencia: "; 
-                            cin>>dniRef;
-                            paciente p=ingresoPaciente();
-                            insertarDespuesDe(lista, dniRef, p);
-                            cout << "\nPaciente insertado después del DNI de referencia.\n";
-                            system("cls");
-                            break;
-                        }
+                                    int dniRef;
+                                    cout << "DNI de referencia: "; 
+                                    cin >> dniRef;
+                                
+                                    // Verificar si el DNI existe
+                                    Nodo* actual = lista;
+                                    bool encontrado = false;
+                                    if (lista != nullptr) {
+                                        do {
+                                            if (actual->info.dni == dniRef) {
+                                                encontrado = true;
+                                                break;
+                                            }
+                                            actual = actual->siguiente;
+                                        } while (actual != lista);
+                                    }
+                                
+                                    if (!encontrado) {
+                                        cambio_color(12);
+                                        cout << "\nDNI inválido. No se encontró el paciente de referencia.\n";
+                                        cambio_color(7);
+                                        getch();
+                                        system("cls");
+                                        break;  // regresa al submenú sin pedir datos del paciente
+                                    }
+                                
+                                    // Si se encontró el DNI, pedir datos del paciente
+                                    paciente p = ingresoPaciente();
+                                    insertarDespuesDe(lista, dniRef, p);
+                                    system("cls");
+                                    break;
+                                }
 
                         case 5:
                             system("cls");
