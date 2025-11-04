@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include<windows.h>
+#include<conio.h>
 using namespace std;
 
 struct paciente {
@@ -314,10 +315,10 @@ void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p){
                 Nodo* nuevo = new Nodo;
                 nuevo->info = p;
                 // se enlaza al nuevo nodo
-                nuevo->sgte = actual;
+                nuevo->siguiente = actual;
                 nuevo->anterior = actual->anterior;
         
-                actual->anterior->sgte = nuevo;
+                actual->anterior->siguiente = nuevo;
                 actual->anterior = nuevo;
                 if (actual == lista) {
                         lista = nuevo;
@@ -325,7 +326,7 @@ void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p){
                 cout << "Paciente insertado correctamente antes del DNI " << dniReferencia << ".\n";
                 return;
                 }
-                actual = actual->sgte;
+                actual = actual->siguiente;
         } while (actual != lista);
         cout << "No se encontró un paciente con el DNI de referencia.\n";
 }
