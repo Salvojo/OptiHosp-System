@@ -512,14 +512,14 @@ void mostrarPacientes(Nodo* lista){
 void liberar(Nodo*& lista) {
     if (!lista) return;
 
-    Nodo* inicio = lista;
+    Nodo* actual = lista->siguiente;
 
-    do {
-        Nodo* aux = lista;         
-        lista = lista->siguiente;  
-        delete aux;                
-    } while (lista != inicio);  
-
+    while (actual != lista) {
+        Nodo* aux = actual;
+        actual = actual->siguiente;
+        delete aux;
+    }
+    delete lista;
     lista = nullptr;
 }
 
