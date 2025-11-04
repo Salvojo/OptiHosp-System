@@ -91,55 +91,128 @@ void menu() {
 
         switch (opcion) {
             case 1: {
-                int subop;
+    int subop;
+
+    do {
+        cambio_color(14);
+        cout << "\n===== SUBMENÚ DE INSERCIÓN =====" << endl;
+        cambio_color(15);
+        cout << "1. Insertar al inicio un paciente" << endl;
+        cout << "2. Insertar al final un paciente" << endl;
+        cout << "3. Insertar antes de un paciente" << endl;
+        cout << "4. Insertar después de un paciente" << endl;
+        cout << "5. Volver al menú principal" << endl;
+        cout << "\nSeleccione una opción: ";
+        cin >> subop;
+        cin.ignore();
+
+        switch (subop) {
+            case 1: {
+                paciente p;
+                cout << "\n--- Datos del nuevo paciente ---" << endl;
+                cout << "Nombre: "; getline(cin, p.nombre);
+                cout << "DNI: "; cin >> p.dni;
+                cout << "Edad: "; cin >> p.edad;
+                cin.ignore();
+                cout << "Diagnóstico: "; getline(cin, p.diagnostico);
+
                 do {
-                    cambio_color(14);
-                    cout << "\n===== SUBMENÚ DE INSERCIÓN =====" << endl;
-                    cambio_color(15);
-                    cout << "1. Insertar al inicio un paciente" << endl;
-                    cout << "2. Insertar al final un paciente" << endl;
-                    cout << "3. Insertar antes de un paciente" << endl;
-                    cout << "4. Insertar después de un paciente" << endl;
-                    cout << "5. Volver al menú principal" << endl;
-                    cout << "\nSeleccione una opción: ";
-                    cin >> subop;
-                    cin.ignore();
+                    cout << "\nTipo de cama [1=General, 2=UCI, 3=UCIN]: ";
+                    cin >> p.tipoCama;
+                } while (p.tipoCama < 1 || p.tipoCama > 3);
 
-                    if (subop >= 1 && subop <= 4) {
-                        paciente p;
-                        cout << "\n--- Datos del nuevo paciente ---" << endl;
-                        cout << "Nombre: "; getline(cin, p.nombre);
-                        cout << "DNI: "; cin >> p.dni;
-                        cout << "Edad: "; cin >> p.edad;
-                        cin.ignore();
-                        cout << "Diagnóstico: "; getline(cin, p.diagnostico);
-
-                        do {
-                            cout << "\nTipo de cama [1=General, 2=UCI, 3=UCIN]: ";
-                            cin >> p.tipoCama;
-                        } while (p.tipoCama < 1 || p.tipoCama > 3);
-
-                        if (subop == 1) insertarInicio(lista, p);
-                        else if (subop == 2) insertarFinal(lista, p);
-                        else if (subop == 3) {
-                            int dniRef;
-                            cout << "\nDNI de referencia: "; cin >> dniRef;
-                            insertarAntesDe(lista, dniRef, p);
-                        } else if (subop == 4) {
-                            int dniRef;
-                            cout << "\nDNI de referencia: "; cin >> dniRef;
-                            insertarDespuesDe(lista, dniRef, p);
-                        }
-                    }
-
-                    if (subop != 5) {
-                        cout << "\nPresione una tecla para continuar...";
-                        getch();
-                        system("cls");
-                    }
-                } while (subop != 5);
+                insertarInicio(lista, p);
+                cambio_color(10);
+                cout << "\nPaciente insertado al inicio correctamente.\n";
                 break;
             }
+
+            case 2: {
+                paciente p;
+                cout << "\n--- Datos del nuevo paciente ---" << endl;
+                cout << "Nombre: "; getline(cin, p.nombre);
+                cout << "DNI: "; cin >> p.dni;
+                cout << "Edad: "; cin >> p.edad;
+                cin.ignore();
+                cout << "Diagnóstico: "; getline(cin, p.diagnostico);
+
+                do {
+                    cout << "\nTipo de cama [1=General, 2=UCI, 3=UCIN]: ";
+                    cin >> p.tipoCama;
+                } while (p.tipoCama < 1 || p.tipoCama > 3);
+
+                insertarFinal(lista, p);
+                cambio_color(10);
+                cout << "\nPaciente insertado al final correctamente.\n";
+                break;
+            }
+
+            case 3: {
+                paciente p;
+                int dniRef;
+                cout << "\n--- Datos del nuevo paciente ---" << endl;
+                cout << "Nombre: "; getline(cin, p.nombre);
+                cout << "DNI: "; cin >> p.dni;
+                cout << "Edad: "; cin >> p.edad;
+                cin.ignore();
+                cout << "Diagnóstico: "; getline(cin, p.diagnostico);
+
+                do {
+                    cout << "\nTipo de cama [1=General, 2=UCI, 3=UCIN]: ";
+                    cin >> p.tipoCama;
+                } while (p.tipoCama < 1 || p.tipoCama > 3);
+
+                cout << "\nDNI de referencia: "; cin >> dniRef;
+                insertarAntesDe(lista, dniRef, p);
+                cambio_color(10);
+                cout << "\nPaciente insertado antes del DNI de referencia.\n";
+                break;
+            }
+
+            case 4: {
+                paciente p;
+                int dniRef;
+                cout << "\n--- Datos del nuevo paciente ---" << endl;
+                cout << "Nombre: "; getline(cin, p.nombre);
+                cout << "DNI: "; cin >> p.dni;
+                cout << "Edad: "; cin >> p.edad;
+                cin.ignore();
+                cout << "Diagnóstico: "; getline(cin, p.diagnostico);
+
+                do {
+                    cout << "\nTipo de cama [1=General, 2=UCI, 3=UCIN]: ";
+                    cin >> p.tipoCama;
+                } while (p.tipoCama < 1 || p.tipoCama > 3);
+
+                cout << "\nDNI de referencia: "; cin >> dniRef;
+                insertarDespuesDe(lista, dniRef, p);
+                cambio_color(10);
+                cout << "\nPaciente insertado después del DNI de referencia.\n";
+                break;
+            }
+
+            case 5:
+                system("cls");
+                break;
+
+            default:
+                cambio_color(12);
+                cout << "\nOpción inválida. Intente nuevamente.\n";
+                cambio_color(7);
+                this_thread::sleep_for(chrono::milliseconds(1000));
+                break;
+        }
+
+        if (subop != 5) {
+            cambio_color(7);
+            cout << "\nPresione una tecla para continuar...";
+            getch();
+            system("cls");
+        }
+
+    } while (subop != 5);
+    break;
+}
 
             case 2: {
                 int dni;
