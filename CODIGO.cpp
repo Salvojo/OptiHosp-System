@@ -272,8 +272,7 @@ paciente ingresoPaciente(){
 }
 
 void insertarInicio(Nodo*& lista, const paciente& p){
-    Nodo* nuevo = new Nodo();
-    nuevo->info = p;
+    Nodo* nuevo = crearNodo(p);
     
     if (lista == NULL) {
         nuevo->siguiente = nuevo;
@@ -326,8 +325,7 @@ void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p){
 
     do {
         if (actual->info.dni == dniReferencia) {
-            Nodo* nuevo = new Nodo;
-            nuevo->info = p;
+            Nodo* nuevo =crearNodo(p);
             // se enlaza al nuevo nodo
             nuevo->siguiente = actual;
             nuevo->anterior = actual->anterior;
@@ -355,8 +353,7 @@ void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p){
     Nodo* actual = lista;
     do {
         if (actual->info.dni == dniReferencia) {
-            Nodo* nuevo = new Nodo;
-            nuevo->info = p;
+            Nodo* nuevo = crearNodo(p);
 
             // se enlaza al nuevo nodo
             nuevo->siguiente = actual->siguiente;
