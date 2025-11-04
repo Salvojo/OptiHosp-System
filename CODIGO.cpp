@@ -53,7 +53,7 @@ void bannerInicio();
 int main() {
     SetConsoleOutputCP(CP_UTF8);
     Nodo* lista = nullptr; 
-    //bannerInicio(); 
+    void bannerInicio();
     ingresoMedico(); system("cls");
     menu(lista);
     return 0;
