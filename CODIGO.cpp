@@ -210,22 +210,32 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
                 break;
 
             case 4: {
-                //int dni;
-                /*cout << "Ingrese el DNI del paciente a eliminar: ";
-                cin >> dni;
-                if (eliminarPorDNI(lista, dni)) {
+                int dni;
+                cout<<"\tIngrese DNI del paciente a eliminar: ";
+                cin>>dni;
+
+                if(eliminarPorDNI(lista,dni)){//verdadero
                     cambio_color(10);
-                    cout << "\nPaciente eliminado correctamente.\n";
-                } else {
+                    cout<<"\n        ";
+                    string mensaje = "Paciente eliminado";
+                    for (char c : mensaje){
+                    cout << c << flush; 
+                    Sleep(60);
+                    }
+                    getch();
+                    system("cls");
+                }else{
                     cambio_color(12);
-                    cout << "\nNo se encontró el paciente.\n";
+                    cout<<"\n        ";
+                    string mensaje = "Paciente no encontrado";
+                    for (char c : mensaje){
+                        cout << c << flush; 
+                        Sleep(60);
+                    }
+                    getch();
+                    system("cls");
                 }
                 cambio_color(7);
-                cout << "\nPresione una tecla para continuar...";
-                getch();
-                system("cls");
-                */
-                system("cls");
                 break;
             }
 
@@ -507,8 +517,50 @@ void mostrarPacientes(Nodo* lista){
     cout << "\n-------------------------------------------------------------\n";
 }
 
-//bool eliminarPorDNI(Nodo*& lista, int dni){}
 
+bool eliminarPorDNI(Nodo*& lista, int dni){
+    if(lista==nullptr){
+        cout<<"\n\tLa lista est\240 vac\241a.";
+        return false;
+    }
+
+    Nodo* actual=lista;
+    bool encontrado=false;
+
+    do{
+        if(actual->info.dni==dni){
+            encontrado=true;
+
+            if(actual->siguiente==actual && actual->anterior==actual){
+                delete actual;
+                lista=nullptr;
+                return true;
+            }
+
+            actual->anterior->siguiente=actual->siguiente;
+            actual->siguiente->anterior=actual->anterior;
+            //actual->siguiente ---- apunta a algo
+            //actual->siguiente->anterior ----- ese algo anterior apunta a algo
+
+            if(actual==lista){//si esta en iniciando
+                lista=actual->siguiente;//el inicio corre
+            }
+
+            delete actual;
+
+            return true;
+        }
+
+        actual=actual->siguiente;
+
+    }while(actual!=lista && !encontrado);
+
+    if(!encontrado){
+        return false;
+    }
+
+    return true;
+}
 
 void liberar(Nodo*& lista) {
     if (!lista) return;
