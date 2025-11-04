@@ -389,7 +389,7 @@ void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p){
         actual = actual->siguiente;
     } while (actual != lista);
 
-    cout<<"No se encontró un paciente con el DNI de referencia.\n";   
+      
 }
 
 void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p){
@@ -416,7 +416,7 @@ void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p){
         actual = actual->siguiente;
     } while (actual != lista);
 
-    cout << "No se encontró un paciente con el DNI de referencia.\n";
+    
 }
 
 void buscarPaciente(Nodo* lista) {
