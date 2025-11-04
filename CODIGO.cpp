@@ -46,9 +46,10 @@ void bannerInicio();
 
 
 int main() {
-    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleOutputCP(850);
+    SetConsoleCP(850);
     Nodo* lista = nullptr; 
-    void bannerInicio();
+    bannerInicio();
     ingresoMedico(); system("cls");
     menu(lista);
     liberar(lista);
@@ -516,7 +517,7 @@ void mostrarPacientes(Nodo* lista){
 
 bool eliminarPorDNI(Nodo*& lista, int dni){
     if(lista==nullptr){
-        cout<<"\n\tLa lista est\240 vac\241a.";
+        cout<<"\n\tLa lista está vacía.";
         return false;
     }
 
