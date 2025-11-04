@@ -215,21 +215,7 @@ void menu() {
 }
 
             case 2: {
-                int dni;
-                cout << "Ingrese el DNI del paciente: ";
-                cin >> dni;
-                Nodo* encontrado = buscarPaciente(lista, dni);
-                if (encontrado) {
-                    cambio_color(10);
-                    cout << "\nPaciente encontrado:\n";
-                    cout << "Nombre: " << encontrado->info.nombre << endl;
-                    cout << "Edad: " << encontrado->info.edad << endl;
-                    cout << "Diagnóstico: " << encontrado->info.diagnostico << endl;
-                } else {
-                    cambio_color(12);
-                    cout << "\nNo se encontró ningún paciente con ese DNI.\n";
-                }
-                cambio_color(7);
+                buscarPaciente(lista);
                 cout << "\nPresione una tecla para continuar...";
                 getch();
                 break;
@@ -398,11 +384,9 @@ void buscarPaciente(Nodo* lista) {
     Nodo* actual = lista;
     bool encontrado = false;
 
-    // recorrido de la lista xd
     do {
         if (actual->info.dni == dniBuscado) {
             encontrado = true;
-
             cambio_color(10);
             cout << "\nPaciente encontrado:\n";
             cambio_color(7);
@@ -417,17 +401,18 @@ void buscarPaciente(Nodo* lista) {
             else if (actual->info.tipoCama == 2) cout << "UCI\n";
             else cout << "UCIN\n";
 
-            return; 
+            cambio_color(7);
+            return;
         }
-
         actual = actual->siguiente;
     } while (actual != lista);
 
-    cambio_color(12);
-    cout << "\nNo se encontró ningún paciente con ese DNI.\n";
-    cambio_color(7);
+    if (!encontrado) {
+        cambio_color(12);
+        cout << "\nNo se encontró ningún paciente con ese DNI.\n";
+        cambio_color(7);
+    }
 }
-
 void mostrarLista(Nodo* lista) {
     system("cls");
     if (lista ==NULL) {
