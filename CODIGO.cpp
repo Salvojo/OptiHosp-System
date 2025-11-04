@@ -1,6 +1,9 @@
+#include <iostream>
 #include <conio.h>
 #include <iomanip>
-#include "graphics.h"
+#include <windows.h>
+#include <string.h>
+using namespace std;
 
 struct paciente {
     string nombre;
@@ -16,37 +19,54 @@ struct Nodo {
     Nodo* anterior;
 };
 
-//Declaracion de funciones
-Nodo* crearNodo(Nodo*&lista);
-void ingresoMedico();
-string clavesita();
-paciente ingresoPaciente();
+
+
+//FUNCIONES PRINCIPALES
+void menu(Nodo* &lista);
 void insertarInicio(Nodo*& lista, const paciente& p);
 void insertarFinal(Nodo*& lista, const paciente& p);
 void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p);
 void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p);
 void buscarPaciente(Nodo* lista);
-void mostrarPaciente(Nodo* lista);
+void mostrarPacientes(Nodo* lista);
 //bool eliminarPorDNI(Nodo*& lista, int dni);
-void menu(Nodo* &lista);
+
+
+
+//FUNCIONES SECUNDARIAS
+Nodo* crearNodo(Nodo*);
+void ingresoMedico();
+string clavesita();
+paciente ingresoPaciente();
+
+
+
+//FUNCIONES AUXILIARES
+void gotoxy(int x,int y);
+void cambio_color(int x);
+void mostrarCursor(bool visible);
+void bannerInicio();
+
+
 
 
 int main() {
-    Nodo* lista = nullptr; //inicializa en null(vacia)
-    bannerInicio(); 
+    SetConsoleOutputCP(CP_UTF8);
+    Nodo* lista = nullptr; 
+    //bannerInicio(); 
     ingresoMedico(); system("cls");
     menu(lista);
     return 0;
 }
 
-// ================= MENÚ PRINCIPAL =================
+// ===== MENÚ PRINCIPAL ========
 void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos con ella
     int opcion;
     system("cls");
     do {
         cambio_color(11);
         cout << "\n\t=======================================" << endl;
-        cout << "\t   GESTI\340N DE CAMAS HOSPITALARIAS" << endl;
+        cout << "\t   GESTIÓN DE CAMAS HOSPITALARIAS" << endl;
         cout << "\t=======================================\n" << endl;
         cambio_color(15);
         cout << "\t1. Insertar paciente" << endl;
@@ -54,7 +74,7 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
         cout << "\t3. Mostrar lista de pacientes" << endl;
         cout << "\t4. Eliminar paciente por DNI" << endl;
         cout << "\t5. Salir" << endl;
-        cout << "\n\tSeleccione una opci\242n: ";
+        cout << "\n\tSeleccione una opción: ";
         cin >> opcion;
         
         switch (opcion) {
@@ -62,13 +82,13 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
                 system("cls");
                 int subop;
                 do {
-                    cout<<"\n===== SUBMEN\351 DE INSERCI\340N ====="<<endl;
+                    cout<<"\n===== SUBMENÚ DE INSERCIÓN ====="<<endl;
                     cout<<"1. Insertar al inicio un paciente"<<endl;
                     cout<<"2. Insertar al final un paciente"<<endl;
                     cout<<"3. Insertar antes de un paciente"<<endl;
-                    cout<<"4. Insertar despu\202s de un paciente"<<endl;
-                    cout<<"5. Volver al men\243 principal"<<endl;
-                    cout<<"Seleccione una opci\242n: ";
+                    cout<<"4. Insertar después de un paciente"<<endl;
+                    cout<<"5. Volver al menú principal"<<endl;
+                    cout<<"Seleccione una opción: ";
                     cin>>subop;
 
                     switch (subop){
@@ -136,14 +156,14 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
             }
 
             case 3:
-                mostrarPaciente(lista);
+                mostrarPacientes(lista);
                 cout << "\nPresione una tecla para continuar...";
                 getch();
                 system("cls");
                 break;
 
             case 4: {
-                int dni;
+                //int dni;
                 /*cout << "Ingrese el DNI del paciente a eliminar: ";
                 cin >> dni;
                 if (eliminarPorDNI(lista, dni)) {
@@ -156,7 +176,9 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
                 cambio_color(7);
                 cout << "\nPresione una tecla para continuar...";
                 getch();
-                */break;
+                */
+                system("cls");
+                break;
             }
 
             case 5:
@@ -168,7 +190,7 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
 
             default:
                 cambio_color(12);
-                cout << "Opci\242n inv\240lida. Intente nuevamente.\n";
+                cout << "Opción inválida. Intente nuevamente.\n";
                 cambio_color(7);
                 Sleep(100);
             }
@@ -209,10 +231,10 @@ void ingresoMedico(){
     string ingreso_codigo, ingreso_contra;
 
     do{
-        gotoxy(35,5);cout<<"INGRESE C\340DIGO M\220DICO: "; 
+        gotoxy(35,5);cout<<"INGRESE CÓDIGO MÉDICO: "; 
         getline(cin, ingreso_codigo);
         
-        gotoxy(35,7);cout<<"INGRESE CONTRASE\245A: "; 
+        gotoxy(35,7);cout<<"INGRESE CONTRASEÑA: "; 
         ingreso_contra = clavesita();
         
         if(ingreso_codigo==codigo && ingreso_contra==contra){
@@ -239,7 +261,7 @@ paciente ingresoPaciente(){
     cout << "DNI: "; cin >> p.dni;
     cout << "Edad: "; cin >> p.edad;
     cin.ignore(); 
-    cout << "Diagn\242stico: "; getline(cin, p.diagnostico);
+    cout << "Diagnóstico: "; getline(cin, p.diagnostico);
 
    do{
         cout << "\nTipo de cama [1=General, 2=UCI, 3=UCIN]: ";
@@ -272,7 +294,7 @@ void insertarInicio(Nodo*& lista, const paciente& p){
     }
 }
 
-void insertarFinal(Nodo*& lista, const paciente& p){//preferia mejor ponerlo persona en lugar de 'p', pero asi esta...
+void insertarFinal(Nodo*& lista, const paciente& p){
     Nodo* nuevo=crearNodo(p);
     if(!lista){
         lista=nuevo;
@@ -296,7 +318,7 @@ void insertarFinal(Nodo*& lista, const paciente& p){//preferia mejor ponerlo per
 
 void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p){
     if (lista == NULL) {
-        cout << "La lista est\240 vac\241a. No se puede insertar antes de un paciente inexistente.\n";
+        cout << "La lista está vacía. \nNo se puede insertar antes de un paciente inexistente.\n";
         return;
     }
 
@@ -322,12 +344,12 @@ void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p){
         actual = actual->siguiente;
     } while (actual != lista);
 
-    cout<<"No se encontr\242 un paciente con el DNI de referencia.\n";   
+    cout<<"No se encontró un paciente con el DNI de referencia.\n";   
 }
 
 void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p){
     if (lista == nullptr) {
-        cout << "La lista est\240 vac\241a. No se puede insertar despu\202s de un paciente inexistente.\n";
+        cout << "La lista está vacía. \nNo se puede insertar después de un paciente inexistente.\n";
         return;}
 
     Nodo* actual = lista;
@@ -350,7 +372,7 @@ void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p){
         actual = actual->siguiente;
     } while (actual != lista);
 
-    cout << "No se encontr\242 un paciente con el DNI de referencia.\n";
+    cout << "No se encontró un paciente con el DNI de referencia.\n";
 }
 
 void buscarPaciente(Nodo* lista) {
@@ -395,12 +417,12 @@ void buscarPaciente(Nodo* lista) {
 
     if (!encontrado) {
         cambio_color(12);
-        cout << "\nNo se encontr\242 ning\243n paciente con ese DNI.\n";
+        cout << "\nNo se encontró ningún paciente con ese DNI.\n";
         cambio_color(7);
     }
 }
 
-void mostrarPaciente(Nodo* lista){
+void mostrarPacientes(Nodo* lista){
     system("cls");
     if (lista ==NULL) {
         cambio_color(12);
@@ -418,7 +440,7 @@ void mostrarPaciente(Nodo* lista){
          << setw(12) << "DNI"
          << setw(6)  << "EDAD"
          << setw(15) << "CAMA"
-         << "DIAGNOSTICO\n";
+         << "DIAGNÓSTICO\n";
 
     cout << "-------------------------------------------------------------\n";
 
@@ -442,3 +464,86 @@ void mostrarPaciente(Nodo* lista){
 
 //bool eliminarPorDNI(Nodo*& lista, int dni){}
 
+
+void liberar(Nodo*& lista) {
+    if (!lista) return;
+
+    Nodo* inicio = lista;
+
+    do {
+        Nodo* aux = lista;         
+        lista = lista->siguiente;  
+        delete aux;                
+    } while (lista != inicio);  
+
+    lista = nullptr;
+}
+
+
+void cambio_color(int x){
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),x);
+}
+
+void gotoxy(int x,int y) {
+    HANDLE hcon;  
+    hcon = GetStdHandle(STD_OUTPUT_HANDLE);  
+    COORD dwPos;  
+    dwPos.X = x;  
+    dwPos.Y= y;  
+    SetConsoleCursorPosition(hcon,dwPos);
+}   
+
+void mostrarCursor(bool visible) {
+    HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE); 
+    CONSOLE_CURSOR_INFO cci;                        
+    GetConsoleCursorInfo(hCon, &cci);              
+    cci.bVisible = visible;                         
+    SetConsoleCursorInfo(hCon, &cci);              
+}
+
+void bannerInicio() {
+    system("cls");
+    string titulo = "SISTEMA DE GESTIÓN HOSPITALARIA";
+    string subtitulo = "    Hospital Nacional";
+    
+    cambio_color(11);
+    gotoxy(25, 5);
+    cout << char(201);
+    for (int i = 0; i < 40; i++) cout << char(205);
+    cout << char(187);
+
+    for (int i = 6; i <= 11; i++) {
+        gotoxy(25, i); cout << char(186);
+        gotoxy(66, i); cout << char(186);
+    }
+
+    gotoxy(25, 12);
+    cout << char(200);
+    for (int i = 0; i < 40; i++) cout << char(205);
+    cout << char(188);
+
+    cambio_color(14);
+    gotoxy(30, 7);
+    for (char c : titulo) {
+        cout << c;
+        Sleep(80);
+    }
+
+    gotoxy(33, 9);
+    for (char c : subtitulo) {
+        cout << c;
+        Sleep(50);
+    }
+
+    cambio_color(7);
+    gotoxy(35, 11);
+    cout << "Cargando sistema";
+    for (int i = 0; i < 3; i++) {
+        cout << ".";
+        Sleep(700);
+    }
+    Sleep(600);
+
+    system("cls");
+    cambio_color(15);
+}
