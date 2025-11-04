@@ -42,14 +42,11 @@ void liberar(Nodo*& );
 void gotoxy(int x,int y);
 void cambio_color(int x);
 void mostrarCursor(bool visible);
-void bannerInicio();
 
 
 int main() {
-    SetConsoleOutputCP(850);
-    SetConsoleCP(850);
+    SetConsoleOutputCP(CP_UTF8);
     Nodo* lista = nullptr; 
-    bannerInicio();
     ingresoMedico(); system("cls");
     menu(lista);
     liberar(lista);
@@ -595,49 +592,3 @@ void mostrarCursor(bool visible) {
     SetConsoleCursorInfo(hCon, &cci);              
 }
 
-void bannerInicio() {
-    system("cls");
-    string titulo = "SISTEMA DE GESTIÓN HOSPITALARIA";
-    string subtitulo = "    Hospital Nacional";
-    
-    cambio_color(11);
-    gotoxy(25, 5);
-    cout << char(201);
-    for (int i = 0; i < 40; i++) cout << char(205);
-    cout << char(187);
-
-    for (int i = 6; i <= 11; i++) {
-        gotoxy(25, i); cout << char(186);
-        gotoxy(66, i); cout << char(186);
-    }
-
-    gotoxy(25, 12);
-    cout << char(200);
-    for (int i = 0; i < 40; i++) cout << char(205);
-    cout << char(188);
-
-    cambio_color(14);
-    gotoxy(30, 7);
-    for (char c : titulo) {
-        cout << c;
-        Sleep(80);
-    }
-
-    gotoxy(33, 9);
-    for (char c : subtitulo) {
-        cout << c;
-        Sleep(50);
-    }
-
-    cambio_color(7);
-    gotoxy(35, 11);
-    cout << "Cargando sistema";
-    for (int i = 0; i < 3; i++) {
-        cout << ".";
-        Sleep(700);
-    }
-    Sleep(600);
-
-    system("cls");
-    cambio_color(15);
-}
