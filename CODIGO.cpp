@@ -303,7 +303,32 @@ Nodo* crearNodo(Nodo*&lista, paciente persona){
     return nuevo;
 }
 
-void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p){}
+void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p){
+        if (lista == NULL) {
+                cout << "La lista está vacía. No se puede insertar antes de un paciente inexistente.\n";
+                return;
+        }
+        Nodo* actual = lista;
+        do {
+                if (actual->info.dni == dniReferencia) {
+                Nodo* nuevo = new Nodo;
+                nuevo->info = p;
+                // se enlaza al nuevo nodo
+                nuevo->sgte = actual;
+                nuevo->anterior = actual->anterior;
+        
+                actual->anterior->sgte = nuevo;
+                actual->anterior = nuevo;
+                if (actual == lista) {
+                        lista = nuevo;
+                }
+                cout << "Paciente insertado correctamente antes del DNI " << dniReferencia << ".\n";
+                return;
+                }
+                actual = actual->sgte;
+        } while (actual != lista);
+        cout << "No se encontró un paciente con el DNI de referencia.\n";
+}
 
 void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p) {
     if (lista == NULL) {
