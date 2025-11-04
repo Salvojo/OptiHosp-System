@@ -223,6 +223,7 @@ void menu(Nodo* &lista){//variable principal a usar entra al menu y tabajamos co
                 cambio_color(7);
                 cout << "\nPresione una tecla para continuar...";
                 getch();
+                system("cls");
                 */
                 system("cls");
                 break;
