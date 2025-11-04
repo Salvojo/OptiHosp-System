@@ -9,8 +9,7 @@ struct paciente {
     int dni;
     int edad;
     string diagnostico;
-    int numeroCama;        
-    string tipoCama;        };
+    int tipoCama;      };
 
 struct Nodo {
     paciente info;
@@ -110,11 +109,20 @@ void menu() {
                         cin.ignore(); 
                         cout << "Diagnóstico: ";
                         getline(cin, p.diagnostico);
-                        cout << "Número de cama: ";
-                        cin >> p.numeroCama;
-                        cin.ignore();
-                        cout << "Tipo de cama (General/UCI/Pediátrica): ";
-                        getline(cin, p.tipoCama);
+                        int opcionCama;
+                        do {
+                            cout << "\nSeleccione el tipo de cama:\n";
+                            cout << "  [1] Cama General\n";
+                            cout << "  [2] Cama UCI\n";
+                            cout << "  [3] Cama UCIN\n";
+                            cout << "Opción: ";
+                            cin >> opcionCama;
+                            if (opcionCama < 1 || opcionCama > 3)
+                                cout << "??  Opción inválida. Intente nuevamente.\n";
+                        } while (opcionCama < 1 || opcionCama > 3);
+                        p.tipoCama = opcionCama;
+                    }
+                        
                         
                     }
 
