@@ -29,17 +29,13 @@ void insertarAntesDe(Nodo*& lista, int dniReferencia, const paciente& p);
 void insertarDespuesDe(Nodo*& lista, int dniReferencia, const paciente& p);
 void buscarPaciente(Nodo* lista);
 void mostrarPacientes(Nodo* lista);
-//bool eliminarPorDNI(Nodo*& lista, int dni);
-
-
+bool eliminarPorDNI(Nodo*& lista, int dni);
 
 //FUNCIONES SECUNDARIAS
 Nodo* crearNodo(Nodo*);
 void ingresoMedico();
 string clavesita();
 paciente ingresoPaciente();
-
-
 
 //FUNCIONES AUXILIARES
 void gotoxy(int x,int y);
@@ -48,14 +44,13 @@ void mostrarCursor(bool visible);
 void bannerInicio();
 
 
-
-
 int main() {
     SetConsoleOutputCP(CP_UTF8);
     Nodo* lista = nullptr; 
     void bannerInicio();
     ingresoMedico(); system("cls");
     menu(lista);
+    liberar(lista);
     return 0;
 }
 
