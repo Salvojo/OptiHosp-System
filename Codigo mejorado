@@ -1,0 +1,1080 @@
+#include <iostream>
+#include <conio.h>
+#include <windows.h>
+#include <string>
+#include <limits>
+#include <iomanip>
+using namespace std;
+
+struct paciente {
+    string nombre;
+    string dni;
+    int edad;
+    string diagnostico;      
+    int tipoCama;
+};
+
+struct Nodo {
+    paciente info;
+    Nodo* siguiente;
+    Nodo* anterior;
+};
+
+
+//INSERTAR
+void menuInsertar(Nodo*&);
+void insertarInicio(Nodo*& , const paciente& );
+void insertarFinal(Nodo*& , const paciente& );
+void insertarDespuesDe(Nodo*& );
+//REPORTE
+void menuReporte(Nodo*&);
+void mostrarInicio_Fin(Nodo* );
+void mostrarFin_Inicio(Nodo* );
+//BUSQUEDA
+void menuBusqueda(Nodo*&);
+void buscarInicioFin(Nodo*& );
+void buscarFinInicio(Nodo*& );
+void navegar (Nodo*);
+//ELIMINACIÓN
+void menuEliminar(Nodo*&);
+void eliminarA(Nodo*& );
+void eliminar_todos(Nodo*& );
+
+//INTERFAZ
+void mostrarMenu(string*, string*, int, int, string);
+
+//FUNCIONES AUXILIARES
+void gotoxy(int, int);
+void ocultarCursor();
+void cambio_color(int x);
+Nodo* crearNodo(paciente );
+
+//VALIDA LAS ENTRADAS x si un retrasado pone algo incorrecto
+paciente ingresoPaciente();
+string leerTexto(string );
+string leerDNI();
+int leerEntero(string , int , int);
+void limpiarBuffer() ;
+
+int main() {
+    SetConsoleOutputCP(CP_UTF8);
+    ocultarCursor();
+    
+    string opciones[] = {"     AGREGAR     ", "     REPORTE     ", "     BÚSQUEDA    ", "     ELIMINAR    ", "      SALIR      "};
+    string opcionesMin[] = {"     Agregar     ", "     Reporte     ", "     Búsqueda    ", "     Eliminar    ", "      Salir      "};
+    int total = 5;
+    int opcionActual = 0;
+    bool salir = false;
+    Nodo* lista =nullptr;
+    
+    // Dibujar el menú por primera vez
+    mostrarMenu(opciones, opcionesMin, total, opcionActual, "MENÚ PRINCIPAL - GESTIÓN DE CAMAS HOSPITALARIAS");
+    
+    while (!salir) {
+        int tecla = _getch();
+        
+        if (tecla == 0 || tecla == 224) {
+            tecla = _getch();
+            
+            if (tecla == 77) {
+                opcionActual++;
+                if (opcionActual >= total) {
+                    opcionActual = 0;
+                }
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "MENÚ PRINCIPAL - GESTIÓN DE CAMAS HOSPITALARIAS");
+            }
+            else if (tecla == 75) {
+                opcionActual--;
+                if (opcionActual < 0) {
+                    opcionActual = total - 1;
+                }
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "MENÚ PRINCIPAL - GESTIÓN DE CAMAS HOSPITALARIAS");
+            }
+        }
+        else if (tecla == 13) {
+            if (opcionActual == 0) {
+                menuInsertar(lista);
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "MENÚ PRINCIPAL - GESTIÓN DE CAMAS HOSPITALARIAS");
+            }
+            else if (opcionActual == 1) {
+                menuReporte(lista);
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "MENÚ PRINCIPAL - GESTIÓN DE CAMAS HOSPITALARIAS");
+            }
+            else if (opcionActual == 2) {
+                menuBusqueda(lista);
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "MENÚ PRINCIPAL - GESTIÓN DE CAMAS HOSPITALARIAS");
+            }
+            else if (opcionActual == 3) {
+                menuEliminar(lista);
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "MENÚ PRINCIPAL - GESTIÓN DE CAMAS HOSPITALARIAS");
+            }
+            else if (opcionActual == 4) {
+                system("cls");
+                cout << "\n\n\n    Saliendo del programa...\n\n";
+                salir = true;
+            }
+        }
+    }
+    
+    return 0;
+}
+
+
+void mostrarMenu(string* opciones, string* opcionesMin, int total, int seleccionada, string titulo) {
+    gotoxy(0, 0);
+    SetConsoleOutputCP(CP_UTF8);
+    
+    cout << "\n\n";
+    cambio_color(11);
+    cout << "       " << titulo << "\n\n\n\n    ";
+    cambio_color(7);
+    
+    // Línea superior
+    for (int i = 0; i < total; i++) {
+        cout << (i == seleccionada ? "╔═════════════════╗" : "┌─────────────────┐") << "    ";
+    }
+    cout << "\n    ";
+    
+    // Línea de texto 
+    for (int i = 0; i < total; i++) {
+        string texto = (i == seleccionada) ? *(opciones + i) : *(opcionesMin + i);
+        cout << (i == seleccionada ? "║" : "│") << texto
+             << (i == seleccionada ? "║" : "│") << "    ";
+    }
+    cout << "\n    ";
+    
+    // Línea inferior
+    for (int i = 0; i < total; i++) {
+        cout << (i == seleccionada ? "╚═════════════════╝" : "└─────────────────┘") << "    ";
+    }
+    cout << "\n\n\n\n";
+    cout << "       USO: Flechas <- -> para navegar | ENTER para seleccionar | ESC para volver";
+}
+
+void menuInsertar(Nodo*& lista) {
+    string opciones[] = {"AGREGAR AL INICIO", "AGREGAR AL FINAL ", " AGREGAR DESPUES ", "      VOLVER     "};
+    string opcionesMin[] = {"Agregar al Inicio", "Agregar al final ", " Agregar Despues ", "      Volver     "};
+    int total = 4;
+    int opcionActual = 0;
+    
+    system("cls");
+    mostrarMenu(opciones, opcionesMin, total, opcionActual, "AGREGAR A UN PACIENTE- Selecciona una opción:");
+    
+    while (true) {
+        int tecla = _getch();
+        
+        if (tecla == 0 || tecla == 224) {
+            tecla = _getch();
+            
+            if (tecla == 77) {
+                opcionActual++;
+                if (opcionActual >= total) opcionActual = 0;
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "AGREGAR A UN PACIENTE- Selecciona una opción:");
+            }
+            else if (tecla == 75) {
+                opcionActual--;
+                if (opcionActual < 0) opcionActual = total - 1;
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "AGREGAR A UN PACIENTE- Selecciona una opción:");
+            }
+        }
+        else if (tecla == 13) {
+            if (opcionActual == 3) {
+                return;
+            }
+            
+            system("cls");
+
+            cout << "\n\n\n    ";
+            if (opcionActual == 0) {
+                cout << "INSERTAR AL INICIO\n";
+                paciente p=ingresoPaciente();
+                insertarInicio(lista, p);
+            }
+            else if (opcionActual == 1) {
+                cout << "INSERTAR AL FIN\n";
+                paciente p=ingresoPaciente();
+                insertarFinal(lista, p);
+            }
+            else if (opcionActual == 2) {
+                cout << "INSERTAR DESPUÉS DE\n";
+                insertarDespuesDe(lista);
+            }
+            
+            cout << "\n\n    Presiona cualquier tecla para volver...";
+            _getch();
+            system("cls");
+            mostrarMenu(opciones, opcionesMin, total, opcionActual, "AGREGAR A UN PACIENTE- Selecciona una opción:");
+        }
+        else if (tecla == 27) {
+            return;
+        }
+    }
+}
+
+void insertarInicio(Nodo*& lista, const paciente& p){
+    Nodo* nuevo = crearNodo(p);
+    
+    if (lista == nullptr) {
+        nuevo->siguiente = nuevo;
+        nuevo->anterior = nuevo;
+        lista = nuevo;
+    }else{
+        Nodo* ultimo = lista->anterior;  
+        nuevo->siguiente = lista;  
+        nuevo->anterior = ultimo;    
+        lista->anterior = nuevo;   
+        ultimo->siguiente = nuevo;   
+        lista = nuevo;
+    }
+    string mensaje = "Paciente insertado al inicio correctamente";
+    for (char c : mensaje){
+        cout << c << flush; 
+        Sleep(60);
+    }
+}
+
+void insertarFinal(Nodo*& lista, const paciente& p){
+    Nodo* nuevo=crearNodo(p);
+    if(!lista){
+        lista=nuevo;
+        nuevo->siguiente=nuevo;
+        nuevo->anterior=nuevo;
+        //lo mismo que nuevo->siguiente=nuevo->anterior=nuevo;
+    }else{
+        Nodo* ultimo = lista->anterior;
+        nuevo->siguiente=lista;
+        nuevo->anterior=ultimo;
+        ultimo->siguiente=nuevo;
+        lista->anterior=nuevo;
+    }
+
+    string mensaje = "Paciente insertado al final correctamente";
+    for (char c : mensaje){
+        cout << c << flush; 
+        Sleep(60);
+    }
+}
+
+void insertarDespuesDe(Nodo*& lista){
+
+    string dniRef =leerDNI();
+    
+    // verificacion del dni :)
+    Nodo* actual = lista;
+    bool encontrado = false;
+    if (lista != nullptr) {
+        do {
+            if (actual->info.dni == dniRef) {
+                encontrado = true;
+                break;
+            }
+            actual = actual->siguiente;
+        } while (actual != lista);
+    }
+    
+    if (!encontrado) {
+        cambio_color(12);
+        cout << "\nDNI inválido. No se encontró el paciente de referencia.\n";
+        cambio_color(7);
+        getch();
+        system("cls");
+        return;
+    }
+
+    paciente p = ingresoPaciente();
+
+
+    if (lista == nullptr) {
+        cout << "La lista está vacía. \nNo se puede insertar después de un paciente inexistente.\n";
+        return;}
+
+
+        Nodo* nuevo = crearNodo(p);
+
+        // se enlaza al nuevo nodo
+        nuevo->siguiente = actual->siguiente;
+        nuevo->anterior = actual;
+
+        actual->siguiente->anterior = nuevo;
+        actual->siguiente = nuevo;
+
+        cout << "Paciente insertado correctamente después del DNI " << dniRef << ".\n";
+        getch();
+  
+}
+
+void menuReporte(Nodo*& lista) {
+    string opciones[] = {"  INICIO A FIN   ", "   FIN A INICIO  ", "      VOLVER     "};
+    string opcionesMin[] = {"  Inicio a Fin   ", "   Fin a Inicio  ", "      Volver     "};
+    int total = 3;
+    int opcionActual = 0;
+    
+    system("cls");
+    mostrarMenu(opciones, opcionesMin, total, opcionActual, "MOSTRAR LISTA DE PACIENTES - Selecciona el orden:");
+    
+    while (true) {
+        int tecla = _getch();
+        
+        if (tecla == 0 || tecla == 224) {
+            tecla = _getch();
+            
+            if (tecla == 77) {
+                opcionActual++;
+                if (opcionActual >= total) opcionActual = 0;
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "MOSTRAR LISTA DE PACIENTES - Selecciona el orden:");
+            }
+            else if (tecla == 75) {
+                opcionActual--;
+                if (opcionActual < 0) opcionActual = total - 1;
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "MOSTRAR LISTA DE PACIENTES - Selecciona el orden:");
+            }
+        }
+        else if (tecla == 13) {
+            if (opcionActual == 2) {
+                return;
+            }
+            
+            system("cls");
+            cout << "\n\n\n    ";
+            if (opcionActual == 0) {
+                cout << "REPORTE DE INICIO A FIN\n\n";
+                cout << "    Mostrando elementos desde el inicio al fin...\n\n";
+                mostrarInicio_Fin(lista);
+            }
+            else if (opcionActual == 1) {
+                cout << "REPORTE DE FIN A INICIO\n\n";
+                cout << "    Mostrando elementos desde el fin al inicio...\n\n";
+                mostrarFin_Inicio(lista);
+            }
+            
+            cout << "\n\n    Presiona cualquier tecla para volver...";
+            _getch();
+            system("cls");
+            mostrarMenu(opciones, opcionesMin, total, opcionActual, "MOSTRAR LISTA DE PACIENTES - Selecciona el orden:");
+        }
+        else if (tecla == 27) {
+            return;
+        }
+    }
+}
+
+void mostrarInicio_Fin(Nodo* lista){
+    if (lista ==nullptr) {
+        cambio_color(12);
+        cout << "\n    No hay pacientes registrados.\n";
+        cambio_color(7);
+        return;
+    }
+
+    cambio_color(11);
+    cout << "================ LISTA DE PACIENTES ================\n\n";
+    cambio_color(7);
+
+    cout << left;
+    cout << setw(15) << "NOMBRE"
+         << setw(12) << "DNI"
+         << setw(6)  << "EDAD"
+         << setw(15) << "CAMA"
+         << "DIAGNÓSTICO\n";
+
+    cout << "-------------------------------------------------------------\n";
+
+    Nodo* actual = lista;
+    do {
+        cout << setw(15) << actual->info.nombre
+             << setw(12) << actual->info.dni
+             << setw(6)  << actual->info.edad;
+
+        if (actual->info.tipoCama == 1)      cout << setw(15) << "General";
+        else if (actual->info.tipoCama == 2) cout << setw(15) << "UCI";
+        else                                 cout << setw(15) << "UCIN";
+
+        cout << actual->info.diagnostico << "\n";
+
+        actual = actual->siguiente;
+    } while (actual != lista);
+
+    cout << "\n-------------------------------------------------------------\n";
+}
+
+void mostrarFin_Inicio(Nodo* lista){
+    if (lista ==nullptr) {
+        cambio_color(12);
+        cout << "\n    No hay pacientes registrados.\n";
+        cambio_color(7);
+        return;
+    }
+
+    cambio_color(11);
+    cout << "================ LISTA DE PACIENTES ================\n\n";
+    cambio_color(7);
+
+    cout << left;
+    cout << setw(15) << "NOMBRE"
+         << setw(12) << "DNI"
+         << setw(6)  << "EDAD"
+         << setw(15) << "CAMA"
+         << "DIAGNÓSTICO\n";
+
+    cout << "-------------------------------------------------------------\n";
+
+    Nodo* actual = lista->anterior;
+    do {
+        cout << setw(15) << actual->info.nombre
+             << setw(12) << actual->info.dni
+             << setw(6)  << actual->info.edad;
+
+        if (actual->info.tipoCama == 1)      cout << setw(15) << "General";
+        else if (actual->info.tipoCama == 2) cout << setw(15) << "UCI";
+        else                                 cout << setw(15) << "UCIN";
+
+        cout << actual->info.diagnostico << "\n";
+
+        actual = actual->anterior;
+    } while (actual != lista->anterior);
+
+    cout << "\n-------------------------------------------------------------\n";
+}
+
+void menuBusqueda(Nodo*& lista) {
+    string opciones[] = {"  INICIO A FIN   ", "   FIN A INICIO  ", "      NAVEGAR    ", "      VOLVER     "};
+    string opcionesMin[] = {"  Inicio a Fin   ", "   Fin a Inicio  ", "      Navegar    ", "      Volver     "};
+    int total = 4;
+    int opcionActual = 0;
+    
+    system("cls");
+    mostrarMenu(opciones, opcionesMin, total, opcionActual, "BUSCAR PACIENTE - Selecciona el método:");
+    
+    while (true) {
+        int tecla = _getch();
+        
+        if (tecla == 0 || tecla == 224) {
+            tecla = _getch();
+            
+            if (tecla == 77) {
+                opcionActual++;
+                if (opcionActual >= total) opcionActual = 0;
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "BUSCAR PACIENTE - Selecciona el método:");
+            }
+            else if (tecla == 75) {
+                opcionActual--;
+                if (opcionActual < 0) opcionActual = total - 1;
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "BUSCAR PACIENTE - Selecciona el método:");
+            }
+        }
+        else if (tecla == 13) {
+            if (opcionActual == 3) {
+                return;
+            }
+            
+            system("cls");
+            cout << "\n\n\n    ";
+            if (opcionActual == 0) {
+                cout << "BÚSQUEDA DE INICIO A FIN\n";
+                cout << "    Ingrese el Paciente a Buscar \n\n";
+                buscarInicioFin(lista);
+            }
+            else if (opcionActual == 1) {
+                cout << "BÚSQUEDA DE FIN A INICIO\n";
+                cout << "    Ingrese el Paciente a Buscar \n\n";
+                buscarFinInicio(lista);
+            }
+            else if (opcionActual == 2) {
+                cout << "NAVEGAR POR LA LISTA\n";
+                cout << "    Use flechas para navegar entre elementos...\n";
+                if(!lista){
+                    cout<<"\n\n\n    Oups, no encontre pacientes";
+                }else{
+                    Nodo*aux=lista;
+                    navegar(aux);
+                }
+                
+            }
+            
+            cout << "\n\n    Presiona cualquier tecla para volver...";
+            _getch();
+            system("cls");
+            mostrarMenu(opciones, opcionesMin, total, opcionActual, "BUSCAR PACIENTE - Selecciona el método:");
+        }
+        else if (tecla == 27) {
+            return;
+        }
+    }
+}
+
+void buscarInicioFin(Nodo*& lista) {
+    string dni_nemo;
+    dni_nemo=leerDNI();
+
+    if (lista == nullptr) {
+        cout << "    Lista vacía" << endl;
+        return;
+    }
+    
+    Nodo* actual = lista;
+    int posicion = 1;
+    
+    do {
+        if (actual->info.dni == dni_nemo) {
+            cout << "    DNI " << dni_nemo << " encontrado en posición " << posicion << endl;
+            getch();
+            navegar(actual);
+            return;
+        }
+
+        actual = actual->siguiente;
+        posicion++;
+    } while (actual != lista);
+    
+    cout << "    DNI " << dni_nemo << " no encontrado" << endl;
+}
+
+void buscarFinInicio(Nodo*& lista) {
+
+    string dni_nemo;
+    dni_nemo=leerDNI();
+
+    if (lista == nullptr) {
+        cout << "    Lista vacía" << endl;
+        return;
+    }
+    
+    Nodo* actual = lista->anterior;  // Empezar desde el último nodo
+    int posicion = 1;
+    
+    // Contar cuántos nodos hay 
+    Nodo* aux = lista;
+    int totalNodos = 0;
+    do {
+        totalNodos++;
+        aux = aux->siguiente;
+    } while (aux != lista);
+    
+    posicion = totalNodos;  // Empezar desde la última posición bb
+    
+    do {
+        if (actual->info.dni == dni_nemo) {
+            cout << "    DNI " << dni_nemo << " encontrado en posición " << posicion << endl;
+            getch();
+            navegar(aux);
+            return;
+        }
+        actual = actual->anterior;
+        posicion--;
+    } while (actual != lista->anterior);
+    
+    cout << "    DNI" << dni_nemo << " no encontrado" << endl;
+}
+
+void navegar (Nodo* aux){
+
+    system("cls");
+    int x=30;//columna
+                //--------------------------
+                cambio_color(11);
+                gotoxy(x-1,4);cout<<"NAVEGACIÓN DE PACIENTES";
+                cambio_color(7);
+
+                //IZQUIERDA
+                //nombre izq
+                gotoxy(x-13,7) ;cout<<"             ";//para limpiar linea
+                gotoxy(x-13,7);cout<<aux->anterior->info.nombre;
+
+                //dni izq
+                cambio_color(11);
+                gotoxy(x-4,8);cout<<"<<";
+                cambio_color(7);
+                gotoxy(x-14,8);cout<<aux->anterior->info.dni;
+
+                //tipo de cama izq
+                gotoxy(x-13,9) ;cout<<"             ";//para limpiar linea
+                gotoxy(x-13,9); switch (aux->anterior->info.tipoCama){
+                case 1:
+                    cout<<"General";
+                    break;
+                case 2:
+                    cout<<"UCI";
+                    break;
+                case 3:
+                    cout<<"UCIN";
+                    break;
+                default:
+                    break;
+                }
+
+                //DERECHA
+                //nombre der
+                gotoxy(x+25,7) ;cout<<"             ";//para limpiar linea
+                gotoxy(x+25,7);cout<<aux->siguiente->info.nombre;
+
+                //dni der
+                cambio_color(11);
+                gotoxy(x+20,8);cout<<">>";
+                cambio_color(7);
+                gotoxy(x+24,8);cout<<aux->siguiente->info.dni;
+                
+                //cama der
+                gotoxy(x+25,9) ;cout<<"             ";//para limpiar linea
+                gotoxy(x+25,9);switch (aux->siguiente->info.tipoCama){
+                case 1:
+                    cout<<"General";
+                    break;
+                case 2:
+                    cout<<"UCI";
+                    break;
+                case 3:
+                    cout<<"UCIN";
+                    break;
+                default:
+                    break;
+                }
+                //----------------------
+                gotoxy(x,6) ;cout<<"╔═════════════════╗";
+                gotoxy(x,7) ;cout<<"║                 ";//para limpiar linea
+                gotoxy(x,7) ;cout<<"║     "<<aux->info.nombre;gotoxy(x+18,7);cout<<"║";
+                gotoxy(x,8) ;cout<<"║                 ";//para limpiar linea
+                gotoxy(x,8) ;cout<<"║    "<<aux->info.dni;gotoxy(x+18,8);cout<<"║";
+                gotoxy(x,9) ;cout<<"║                 ";//para limpiar linea
+                gotoxy(x,9) ;cout<<"║     ";
+                switch (aux->info.tipoCama){
+                case 1:
+                    cout<<"General";
+                    break;
+                case 2:
+                    cout<<"UCI";
+                    break;
+                case 3:
+                    cout<<"UCIN";
+                    break;
+                default:
+                    break;
+                }
+                
+                gotoxy(x+18,9);cout<<"║";
+                gotoxy(x,10);cout<<"╚═════════════════╝";
+
+    while(true){
+        int tecla = _getch();
+        if(tecla ==224 || tecla == 0){
+            tecla= _getch();
+            if(tecla ==77){//derecha
+                aux=aux->siguiente;
+                //--------------------------
+                cambio_color(11);
+                gotoxy(x-1,4);cout<<"NAVEGACIÓN DE PACIENTES";
+                cambio_color(7);
+
+                //IZQUIERDA
+                //nombre izq
+                gotoxy(x-13,7) ;cout<<"             ";//para limpiar linea
+                gotoxy(x-13,7);cout<<aux->anterior->info.nombre;
+
+                //dni izq
+                cambio_color(11);
+                gotoxy(x-4,8);cout<<"<<";
+                cambio_color(7);
+                gotoxy(x-14,8);cout<<aux->anterior->info.dni;
+
+                //tipo de cama izq
+                gotoxy(x-13,9) ;cout<<"             ";//para limpiar linea
+                gotoxy(x-13,9); switch (aux->anterior->info.tipoCama){
+                case 1:
+                    cout<<"General";
+                    break;
+                case 2:
+                    cout<<"UCI";
+                    break;
+                case 3:
+                    cout<<"UCIN";
+                    break;
+                default:
+                    break;
+                }
+
+                //DERECHA
+                //nombre der
+                gotoxy(x+25,7) ;cout<<"             ";//para limpiar linea
+                gotoxy(x+25,7);cout<<aux->siguiente->info.nombre;
+
+                //dni der
+                cambio_color(11);
+                gotoxy(x+20,8);cout<<">>";
+                cambio_color(7);
+                gotoxy(x+24,8);cout<<aux->siguiente->info.dni;
+                
+                //cama der
+                gotoxy(x+25,9) ;cout<<"             ";//para limpiar linea
+                gotoxy(x+25,9);switch (aux->siguiente->info.tipoCama){
+                case 1:
+                    cout<<"General";
+                    break;
+                case 2:
+                    cout<<"UCI";
+                    break;
+                case 3:
+                    cout<<"UCIN";
+                    break;
+                default:
+                    break;
+                }
+                //----------------------
+                gotoxy(x,6) ;cout<<"╔═════════════════╗";
+                gotoxy(x,7) ;cout<<"║                 ";//para limpiar linea
+                gotoxy(x,7) ;cout<<"║     "<<aux->info.nombre;gotoxy(x+18,7);cout<<"║";
+                gotoxy(x,8) ;cout<<"║                 ";//para limpiar linea
+                gotoxy(x,8) ;cout<<"║    "<<aux->info.dni;gotoxy(x+18,8);cout<<"║";
+                gotoxy(x,9) ;cout<<"║                 ";//para limpiar linea
+                gotoxy(x,9) ;cout<<"║     ";
+                switch (aux->info.tipoCama){
+                case 1:
+                    cout<<"General";
+                    break;
+                case 2:
+                    cout<<"UCI";
+                    break;
+                case 3:
+                    cout<<"UCIN";
+                    break;
+                default:
+                    break;
+                }
+                
+                gotoxy(x+18,9);cout<<"║";
+                gotoxy(x,10);cout<<"╚═════════════════╝";
+            }else if(tecla ==75){//izq
+                aux=aux->anterior;
+
+                //--------------------------
+                cambio_color(11);
+                gotoxy(x-1,4);cout<<"NAVEGACIÓN DE PACIENTES";
+                cambio_color(7);
+
+                //IZQUIERDA
+                //nombre izq
+                gotoxy(x-13,7) ;cout<<"             ";//para limpiar linea
+                gotoxy(x-13,7);cout<<aux->anterior->info.nombre;
+
+                //dni izq
+                cambio_color(11);
+                gotoxy(x-4,8);cout<<"<<";
+                cambio_color(7);
+                gotoxy(x-14,8);cout<<aux->anterior->info.dni;
+
+                //tipo de cama izq
+                gotoxy(x-13,9) ;cout<<"             ";//para limpiar linea
+                gotoxy(x-13,9); switch (aux->anterior->info.tipoCama){
+                case 1:
+                    cout<<"General";
+                    break;
+                case 2:
+                    cout<<"UCI";
+                    break;
+                case 3:
+                    cout<<"UCIN";
+                    break;
+                default:
+                    break;
+                }
+
+                //DERECHA
+                //nombre der
+                gotoxy(x+25,7) ;cout<<"             ";//para limpiar linea
+                gotoxy(x+25,7);cout<<aux->siguiente->info.nombre;
+
+                //dni der
+                cambio_color(11);
+                gotoxy(x+20,8);cout<<">>";
+                cambio_color(7);
+                gotoxy(x+24,8);cout<<aux->siguiente->info.dni;
+                
+                //cama der
+                gotoxy(x+25,9) ;cout<<"             ";//para limpiar linea
+                gotoxy(x+25,9);switch (aux->siguiente->info.tipoCama){
+                case 1:
+                    cout<<"General";
+                    break;
+                case 2:
+                    cout<<"UCI";
+                    break;
+                case 3:
+                    cout<<"UCIN";
+                    break;
+                default:
+                    break;
+                }
+                //----------------------
+
+
+                gotoxy(x,6) ;cout<<"╔═════════════════╗";
+                gotoxy(x,7) ;cout<<"║                 ";//para limpiar linea
+                gotoxy(x,7) ;cout<<"║     "<<aux->info.nombre;gotoxy(x+18,7);cout<<"║";
+                gotoxy(x,8) ;cout<<"║                 ";//para limpiar linea
+                gotoxy(x,8) ;cout<<"║    "<<aux->info.dni;gotoxy(x+18,8);cout<<"║";
+                gotoxy(x,9) ;cout<<"║                 ";//para limpiar linea
+                gotoxy(x,9) ;cout<<"║     ";
+                switch (aux->info.tipoCama){
+                case 1:
+                    cout<<"General";
+                    break;
+                case 2:
+                    cout<<"UCI";
+                    break;
+                case 3:
+                    cout<<"UCIN";
+                    break;
+                default:
+                    break;
+                }
+                
+                gotoxy(x+18,9);cout<<"║";
+                gotoxy(x,10);cout<<"╚═════════════════╝";
+            }
+
+        }else if(tecla==27){//tecla esc
+            return;
+        }
+
+    }
+}
+
+void menuEliminar(Nodo*& lista) {
+    string opciones[] = {"ELIMINAR PACIENTE", " ELIMINAR TODOS  ", "      VOLVER     "};
+    string opcionesMin[] = {"Eliminar Paciente", " Eliminar Todos  ", "      Volver     "};
+    int total = 3;
+    int opcionActual = 0;
+    
+    system("cls");
+    mostrarMenu(opciones, opcionesMin, total, opcionActual, "ELIMINAR PACIENTE POR DNI - Selecciona una opción:");
+    
+    while (true) {
+        int tecla = _getch();
+        
+        if (tecla == 0 || tecla == 224) {
+            tecla = _getch();
+            
+            if (tecla == 77) {
+                opcionActual++;
+                if (opcionActual >= total) opcionActual = 0;
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "ELIMINAR PACIENTE POR DNI - Selecciona una opción:");
+            }
+            else if (tecla == 75) {
+                opcionActual--;
+                if (opcionActual < 0) opcionActual = total - 1;
+                mostrarMenu(opciones, opcionesMin, total, opcionActual, "ELIMINAR PACIENTE POR DNI - Selecciona una opción:");
+            }
+        }
+        else if (tecla == 13) {
+            if (opcionActual == 2) {
+                return;
+            }
+            
+            system("cls");
+            cout << "\n\n\n    ";
+            if (opcionActual == 0) {
+                cout << "ELIMINAR PACIENTE\n";
+                cout << "    Ingrese el DNI del paciente a eliminar\n\n ";
+                eliminarA(lista);
+            }
+            else if (opcionActual == 1) {
+                cout << "ELIMINAR TODOS LOS ELEMENTOS\n";
+                char opcion;
+                cout << "    ¿Está seguro de eliminar a todos? (S/N): ";
+                cin>>opcion;
+                if(opcion== 's' || opcion == 'S') eliminar_todos(lista);
+            }
+            
+            cout << "\n\n    Presiona cualquier tecla para volver...";
+            _getch();
+            system("cls");
+            mostrarMenu(opciones, opcionesMin, total, opcionActual, "ELIMINAR PACIENTE POR DNI - Selecciona una opción:");
+        }
+        else if (tecla == 27) {
+            return;
+        }
+    }
+}
+
+void eliminarA(Nodo*& lista){
+    if(!lista){
+        cout<<"No hay Pacientes Guardados";
+        system("pause");
+        return;
+    }
+
+    string dni_eliminar=leerDNI();
+    
+    Nodo* actual= lista;
+
+    do {
+        if (actual->info.dni == dni_eliminar) {
+            if (actual->siguiente == actual) {
+                delete actual;
+                lista = nullptr;
+                return;
+            }
+            
+            if (actual == lista) {
+                lista = lista->siguiente;
+            }
+            
+            actual->anterior->siguiente = actual->siguiente;
+            actual->siguiente->anterior = actual->anterior;
+            
+            delete actual;
+            cout<<"\n\n    Paciente eliminado exitosamente";
+            getch();
+            return;
+        }
+        actual = actual->siguiente;
+    } while (actual != lista);
+
+    cout<<"    No se ha encontrado un paciente con el dni \""<<dni_eliminar<<"\"";
+}
+
+void eliminar_todos(Nodo*& lista) {
+    if (!lista) return;
+
+    Nodo* actual = lista->siguiente;
+
+    while (actual != lista) {
+        Nodo* aux = actual;
+        actual = actual->siguiente;
+        delete aux;
+    }
+    delete lista;
+    lista = nullptr;
+}
+
+Nodo* crearNodo(paciente persona){
+    Nodo* nuevo= new Nodo();
+    nuevo->info=persona;
+    nuevo->siguiente=nullptr;
+    nuevo->anterior=nullptr;
+    return nuevo;
+}
+
+void gotoxy(int x, int y) {
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void ocultarCursor() {
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO info;
+    info.dwSize = 100;
+    info.bVisible = FALSE;
+    SetConsoleCursorInfo(consoleHandle, &info);
+}
+
+void cambio_color(int x){
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),x);
+}
+
+paciente ingresoPaciente() {
+    paciente p;
+    cout << "\n--- Datos del nuevo paciente ---" << endl;
+    cin.ignore();
+    
+    // Validar nombre
+    p.nombre = leerTexto("    Nombre: ");
+    
+    // Validar DNI
+    p.dni = leerDNI();
+    
+    // Validar edad
+    p.edad = leerEntero("    Edad: ", 0, 120);
+    
+    // Limpiar buffer antes de getline
+    cin.ignore();
+    
+    // Validar diagnóstico
+    p.diagnostico = leerTexto("    Diagnóstico: ");
+    
+    // Validar tipo de cama
+    p.tipoCama = leerEntero("\nTipo de cama [1=General, 2=UCI, 3=UCIN]: ", 1, 3);
+    
+    cout << "\n¡Paciente registrado exitosamente!" << endl;
+    
+    return p;
+}
+// Función para validar que el nombre no esté vacío
+string leerTexto(string mensaje) {
+    string texto;
+    
+    do {
+        cout << mensaje;
+        getline(cin, texto);
+        
+        if (texto.empty() || texto == " ") {
+            cout << "    Error: Este campo no puede estar vacío" << endl;
+        }
+        
+    } while (texto.empty() || texto == " ");
+    
+    return texto;
+}
+// Función para validar DNI (solo números y longitud específica)
+string leerDNI() {
+    string dni;
+    bool valido = false;
+    
+    do {
+        cout << "    DNI (8 dígitos): ";
+        cin >> dni;
+        
+        // Verificar que tenga 8 caracteres
+        if (dni.length() != 8) {
+            cout << "    Error: El DNI debe tener 8 dígitos" << endl;
+            continue;
+        }
+        
+        // Verificar que todos sean números
+        valido = true;
+        int letras= dni.size();
+        for (int i = 0; i < letras; i++) {
+            if (!isdigit(dni[i])) {
+                cout << "    Error: El DNI solo debe contener números" << endl;
+                valido = false;
+                break;
+            }
+        }
+        
+    } while (!valido);
+    
+    return dni;
+}
+
+// Función para validar y leer un entero
+int leerEntero(string mensaje, int min, int max) {
+    int valor;
+    bool valido = false;
+    
+    do {
+        cout << mensaje;
+        
+        if (cin >> valor) {
+            // Se ingresó un número
+            if (valor >= min && valor <= max) {
+                valido = true;
+            } else {
+                cout << "    Error: El valor debe estar entre " << min << " y " << max << endl;
+            }
+        } else {
+            // Se ingresó algo que NO es un número
+            cout << "    Error: Debe ingresar un número válido" << endl;
+            limpiarBuffer();
+        }
+        
+    } while (!valido);
+    
+    return valor;
+}
+// Función para limpiar el buffer de entrada
+void limpiarBuffer() {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+
+
