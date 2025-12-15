@@ -32,8 +32,8 @@ void mostrarInicio_Fin(Nodo* );
 void mostrarFin_Inicio(Nodo* );
 //BUSQUEDA
 void menuBusqueda(Nodo*&);
-void buscarInicioFin(Nodo*& );
-void buscarFinInicio(Nodo*& );
+void buscarInicioFin(Nodo* );
+void buscarFinInicio(Nodo* );
 void navegar (Nodo*);
 //ELIMINACIÓN
 void menuEliminar(Nodo*&);
@@ -502,7 +502,7 @@ void menuBusqueda(Nodo*& lista) {
     }
 }
 
-void buscarInicioFin(Nodo*& lista) {
+void buscarInicioFin(Nodo* lista) {
     string dni_nemo;
     dni_nemo=leerDNI();
 
@@ -529,7 +529,7 @@ void buscarInicioFin(Nodo*& lista) {
     cout << "    DNI " << dni_nemo << " no encontrado" << endl;
 }
 
-void buscarFinInicio(Nodo*& lista) {
+void buscarFinInicio(Nodo* lista) {
 
     string dni_nemo;
     dni_nemo=leerDNI();
